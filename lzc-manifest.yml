@@ -1,0 +1,50 @@
+application:
+  subdomain: tuxee
+  multi_instance: false
+  # Tuxee has its own Linux user login (PAM-backed), so it authenticates itself.
+  # Upstream explicitly supports running behind a TLS-terminating proxy.
+  public_path:
+    - /
+  upstreams:
+    - location: /
+      backend: http://tuxee:80/
+services:
+  tuxee:
+    # upstream: agent0ai/tuxee:1.2.1
+    image: docker.1ms.run/agent0ai/tuxee:1.2.1
+    environment:
+      - TUXEE_HTTP_PORT=80
+      # The HTTPS listener inside the container is disabled (0): the platform
+      # entry already terminates TLS, and upstream documents that setup needs
+      # no extra Tuxee settings.
+      - TUXEE_HTTPS_PORT=0
+      - ROOT_PASSWORD={{ .U.root_password }}
+      - TZ=Asia/Shanghai
+    binds:
+      - /lzcapp/var/state:/var/lib/tuxee
+      - /lzcapp/var/home:/root
+      - /lzcapp/var/init:/init
+    stop_grace_period: 30s
+usage: |
+  Tuxee 是一个跑在容器里的 Linux 桌面：用浏览器打开后在登录页输入一个 Linux 用户名
+  和密码，就得到一个属于你的桌面会话，可以使用终端、文件管理器，以及 Chromium、
+  VS Code 之类的图形程序。环境基于 Debian slim，核心用 Go 编写。
+
+  首次使用：
+    - 打开应用入口，在登录页选择一个用户名（会作为 Linux 用户创建）和密码登录。
+    - 安装时设置的 root 密码也一并生效，可在终端里 sudo 使用。
+
+  重要说明：
+    - 这是一个完整的 Linux 环境，你拥有 root 权限、可以自由安装软件（apt 可用）。
+      请只把它当作自己的个人环境，不要在里面存放敏感凭据。
+    - 上游文档明确写道：这个以 root 运行的服务是「特权管理界面」（privileged
+      management surface），在公开部署前仍建议做一次生产安全评审。
+      本应用使用自身的 Linux 账号体系登录，且已通过 public_path 直接对外开放，
+      请务必设置强密码。
+    - 容器内的 HTTPS 监听已关闭，由平台入口负责 TLS（上游文档说明这种
+      TLS 终结代理的部署方式不需要额外配置）。因此请通过平台入口访问，
+      不要用明文 HTTP 直接连容器端口。
+    - 数据保存在 state / home / init 三个目录，随应用持久化；重启应用会保留
+      已保存的终端与图形程序，但会结束浏览器登录会话。
+    - 本应用不需要 privileged 模式，也不挂载 docker.sock（上游文档原文确认）。
+    - 未做实机验证。

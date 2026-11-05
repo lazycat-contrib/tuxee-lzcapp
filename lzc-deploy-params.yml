@@ -1,0 +1,13 @@
+params:
+  - id: root_password
+    type: secret
+    name: Root password
+    description: "Password for the container's root user (used via sudo inside Tuxee). Random by default."
+    default_value: "$random(len=20)"
+    optional: false
+
+locales:
+  zh:
+    root_password:
+      name: root 密码
+      description: 容器内 root 用户的密码，可在 Tuxee 终端里用 sudo 时使用。默认随机生成。

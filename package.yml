@@ -1,0 +1,18 @@
+package: community.lazycat.app.tuxee
+name: Tuxee
+description: "A headless Linux desktop in a container: log in as a real Linux user and use terminals, a file manager and GUI apps from the browser."
+version: 1.2.1
+min_os_version: "1.5.0"
+homepage: https://github.com/agent0ai/tuxee
+author: Agent Zero, s.r.o.
+license: MIT
+permissions:
+  required:
+    - net.internet
+locales:
+  zh:
+    name: Tuxee
+    description: "容器里的 Linux 桌面：用真实 Linux 账号登录，在浏览器里使用终端、文件管理器与图形程序。"
+  en:
+    name: Tuxee
+    description: "A headless Linux desktop in a container: log in as a real Linux user and use terminals, a file manager and GUI apps from the browser."
