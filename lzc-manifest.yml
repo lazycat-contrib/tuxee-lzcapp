@@ -10,8 +10,8 @@ application:
       backend: http://tuxee:80/
 services:
   tuxee:
-    # upstream: agent0ai/tuxee:1.2.1
-    image: docker.1ms.run/agent0ai/tuxee:1.2.1
+    # upstream: agent0ai/tuxee:v1.2.1
+    image: docker.1ms.run/agent0ai/tuxee:v1.2.1
     environment:
       - TUXEE_HTTP_PORT=80
       # The HTTPS listener inside the container is disabled (0): the platform
